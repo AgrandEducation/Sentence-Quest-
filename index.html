@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sentence Quest (Grade 2 English)</title>
+<style>
+:root{--ink:#1d2a3a;--ok:#2e7d4f;--bad:#b5470f;--c:#2f9e8f}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Trebuchet MS','Segoe UI',Arial,sans-serif;color:var(--ink);min-height:100vh;padding:14px;display:flex;justify-content:center;background:#e9f6ff url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='560' height='300'%3E%3Ctext x='20' y='190' transform='rotate(-22 280 150)' font-family='Arial' font-size='21' font-weight='700' fill='%231d2a3a' fill-opacity='0.08'%3EA-Grand Education and Learning Consult LTD%3C/text%3E%3C/svg%3E")}
+#app{width:100%;max-width:960px}
+.card{border:4px solid var(--ink);border-radius:22px;padding:clamp(16px,3vw,28px);min-height:440px;box-shadow:0 8px 0 #b9d6ea;background:#fff url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='560' height='300'%3E%3Ctext x='20' y='190' transform='rotate(-22 280 150)' font-family='Arial' font-size='21' font-weight='700' fill='%231d2a3a' fill-opacity='0.07'%3EA-Grand Education and Learning Consult LTD%3C/text%3E%3C/svg%3E")}
+.top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.pill{background:#fff;border:3px solid var(--ink);border-radius:999px;padding:3px 14px;font-weight:700;font-size:clamp(15px,2.2vw,20px)}
+.band{background:var(--c);color:#fff;border-radius:14px;padding:8px 16px;font-weight:900;font-size:clamp(20px,3.6vw,32px);margin-bottom:12px}
+h1{font-size:clamp(30px,6vw,58px);margin:.1em 0;line-height:1.05}
+p{font-size:clamp(18px,2.7vw,27px);line-height:1.4;margin:.4em 0}
+.center{text-align:center}.big{font-size:clamp(54px,10vw,100px);margin:0}
+button{font:inherit;font-size:clamp(17px,2.5vw,25px);font-weight:700;min-height:58px;padding:10px 20px;border-radius:16px;border:3px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer}
+button:hover:not(:disabled){background:#fff3a8}
+button:focus-visible,input:focus-visible{outline:4px solid #1c7ed6;outline-offset:2px}
+button.go{background:#ffd43b}button:disabled{opacity:.45;cursor:not-allowed}
+button.ok{background:#d3f9d8;border-color:var(--ok)}
+.row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:12px 0}
+.owl{display:flex;gap:12px;align-items:flex-start}.owl .e{font-size:clamp(46px,8vw,76px)}
+.bub{background:#fff8dc;border:3px solid var(--ink);border-radius:18px;padding:10px 16px;flex:1}
+.ex{display:block;background:#eef7ff;border-left:8px solid var(--c);border-radius:10px;padding:8px 14px;margin:8px 0;font-size:clamp(18px,2.8vw,28px);font-weight:700}
+.sent{background:#f1f8ff;border:3px dashed var(--ink);border-radius:16px;padding:14px;text-align:center;font-size:clamp(22px,3.8vw,38px);font-weight:700;margin:10px 0}
+.blank{background:#ffe066;border-radius:8px;padding:0 14px}
+.msg{min-height:3em;font-weight:700;font-size:clamp(17px,2.5vw,25px);text-align:center}
+.good{color:var(--ok)}.try{color:var(--bad)}
+.dots{display:flex;gap:7px;justify-content:center;margin:6px 0}.dot{width:14px;height:14px;border-radius:50%;background:#cfd8e3}.dot.on{background:var(--c)}
+.wc{width:min(270px,100%);min-height:150px}.wc small{display:block;font-weight:400;font-size:.7em}
+.chip{background:#fff;border:3px solid var(--ink);border-radius:14px;padding:8px 14px}
+.slots{min-height:80px;border:3px dashed var(--ink);border-radius:16px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;background:#f8fbff}
+.sc{display:flex;flex-direction:column;align-items:center;margin:8px}
+.bm{display:flex;gap:14px;transition:transform .5s}.bm span{background:var(--c);color:#fff;border-radius:12px;padding:10px 16px;font-weight:700;font-size:clamp(16px,2.4vw,22px)}
+.bm.u{transform:rotate(-7deg)}
+@media (prefers-reduced-motion:reduce){.bm{transition:none}}
+@media (prefers-reduced-motion:no-preference){.pop{animation:pop .35s}@keyframes pop{from{transform:scale(.94);opacity:.5}to{transform:none;opacity:1}}}
+.foot{text-align:center;font-size:14px;margin-top:10px;color:#44556b}
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"></main>
+<script>
+const app=document.getElementById('app');
+const CATS={SQC:['Statement','Question','Command'],SQCE:['Statement','Question','Command','Exclamation'],SC:['Simple sentence','Compound sentence'],OR:['Another option','A result']};
+const WHY={Statement:'A statement tells a fact or an opinion. It most often ends with a full stop.',Question:'A question asks for an answer and ends with a question mark.',Command:'A command tells someone to do something. It starts with a bossy verb.',Exclamation:'An exclamation shows strong feeling. It starts with What or How and ends with !','Simple sentence':'It has only ONE idea, so it is a simple sentence.','Compound sentence':'It has TWO ideas joined by a joining word, so it is a compound sentence.','Another option':'Here, or gives another option.','A result':'Here, or tells what might happen as a result.'};
+const GW={and:'and builds on the first idea.',but:'but joins ideas that oppose each other.',or:'or gives another option, or says what might happen as a result.'};
+const sort=(c,l)=>l.map(([s,a])=>({q:'What kind of sentence is this?',s,o:CATS[c],a,w:WHY[a]}));
+const tf=(s,v,w)=>({q:'True or false?',s,o:['True','False'],a:v?'True':'False',w});
+const gap=(s,a,o)=>({q:'Which joining word fits the gap?',s,o:o||['and','but'],a,w:GW[a]});
+const mc=(q,o,w,s)=>({q,s,o,a:o[0],w,sh:1});
+const bd=(b,d)=>({q:'Build the compound sentence. Tap the pieces in the right order.',b,d});
+const WORLDS=[
+{n:'Sentence Island',e:'🏝️',c:'#2f9e8f',sub:'statements, questions, commands',
+ learn:[
+  {t:'A simple sentence is about ONE idea and makes complete sense. It starts with a capital letter and often ends with a full stop.',ex:['The horse galloped.','Mum eats cake.']},
+  {t:'A STATEMENT tells us a fact or an opinion. It most often ends with a full stop.',ex:['Jacob is baking a cake. (a fact)','That cake is delicious. (an opinion)']},
+  {t:'A QUESTION asks for an answer. It always ends with a question mark.',ex:['What flavour is the cake?','Is the cake ready?']},
+  {t:'A COMMAND tells someone to do something. It starts with a bossy verb called an imperative verb. It ends with a full stop, or with ! if the feeling is strong.',ex:['Share the cake fairly.','Eat it quickly!']}],
+ items:[mc('Which one is a simple sentence that makes complete sense?',['Sam hides quietly.','hides quietly','The pen'],'It has a noun, a verb and a capital letter, and it makes complete sense.'),
+  tf('A simple sentence is about two ideas.',0,'A simple sentence is about ONE idea.'),
+  mc('Which word is an imperative (bossy) verb?',['mix','runs','learns'],'Imperative verbs tell someone what to do, like mix, take and get.'),
+  ...sort('SQC',[['I like peas.','Statement'],['Get into bed!','Command'],['Who is talking?','Question'],['Pass the pen.','Command'],['Can you hear the birds?','Question']])]},
+{n:'Exclamation Volcano',e:'🌋',c:'#e8590c',sub:'exclamations',
+ learn:[
+  {t:'There are FOUR types of simple sentence: statements, questions, commands and exclamations.',ex:['The road was busy.','Where is the library?','Pass the book.','What a mess there is!']},
+  {t:'An EXCLAMATION shows strong emotion or surprise. It ends with an exclamation mark.',ex:['What a mess there is!','How brave you are!']},
+  {t:'An exclamation starts with WHAT or HOW. It has a verb, often a being verb like is or are.',ex:['What big paws those are!','How noisy that parrot is!']}],
+ items:[mc('An exclamation shows...',['strong emotion or surprise','calm emotion','a fact or opinion'],'An exclamation shows strong emotion or surprise.'),
+  tf('An exclamation starts with Why or Which.',0,'An exclamation starts with What or How.'),
+  mc('Which word is a being verb?',['is','pass','look'],'Being verbs are words like is and are. They are often in exclamations.'),
+  mc('Which sentence is an exclamation?',['How noisy that parrot is!','That parrot is noisy.','Is that parrot noisy?'],'It starts with How, has a verb and ends with !'),
+  ...sort('SQCE',[['What an interesting book this is!','Exclamation'],['Who is your favourite character?','Question'],['Look at the colourful rainbow!','Command']]),
+  tf('All commands end in a full stop.',0,'A command can end with ! when the feeling is strong.')]},
+{n:'Balance Bay',e:'⚖️',c:'#1c7ed6',sub:'joining with “and”',
+ learn:[
+  {t:'A COMPOUND sentence is two simple sentences joined together by a joining word.',ex:['The sea is cold and the waves are powerful.']},
+  {t:'The joining word AND builds on the first idea. The second idea adds more.',ex:['The turtle moves slowly and the fish follow closely.']},
+  {t:'Both ideas must make complete sense on their own and be equally important. Then the scales are balanced!',ex:['The flower is red and the leaves are green.'],v:0},
+  {t:'Careful! “The flower is red and green.” is NOT a compound sentence, because “green.” cannot stand alone. The scales are not balanced.',v:1}],
+ items:[mc('Which word can join two simple sentences together?',['and','is','the'],'And is a joining word.'),
+  tf('The second idea must be completely different from the first idea.',0,'With and, the second idea builds on the first idea.'),
+  mc('Both ideas in a compound sentence must...',['make sense on their own','include an adjective','be in the past tense'],'Each idea needs to make complete sense on its own, like a balanced scale.'),
+  ...sort('SC',[['Kites fly in the sky.','Simple sentence'],['The beach is hot and the children play in the sea.','Compound sentence'],['The birds sing happily and quickly.','Simple sentence']]),
+  mc('Which idea joins with: Jun went to the cinema and ...',['the film was scary.','the sea is cold.','the dog jumped up.'],'The film is related to going to the cinema, so it builds on the first idea.'),
+  bd(['The tree is tall','and','the branches are bare.'],['but','the sun is hot.'])]},
+{n:'Opposite Hills',e:'⛰️',c:'#9c36b5',sub:'joining with “but”',
+ learn:[
+  {t:'The joining word BUT joins two ideas that oppose each other. It is not what we expected!',ex:['I walked to the park but it started raining.']},
+  {t:'AND builds on the first idea. BUT opposes the first idea.',ex:['The school was closed and the teachers had gone home.','The school was closed but the teachers were still working.']},
+  {t:'Both ideas still make complete sense and are equally important, like balanced scales.',ex:['The baby can crawl but it cannot walk.'],v:0}],
+ items:[tf('The joining word but builds on the first idea.',0,'But opposes the first idea. And builds on it.'),
+  mc('When can we use the joining word but?',['to join opposing ideas','to build on the first idea','to give another option'],'But joins ideas that oppose each other.'),
+  gap('The cinema was open ___ we ate popcorn.','and'),gap('The cinema was open ___ my favourite film was not showing.','but'),
+  gap('Alex likes music ___ he does not sing.','but'),gap('Alex likes music ___ he plays the violin.','and'),
+  mc('Which idea opposes: The sun is shining but ...',['the air is cold.','the birds are singing.','the sky is clear.'],'Sunshine usually means warm, so cold air is the opposite of what we expect.'),
+  bd(['Sam rode her bike','but','the wheels went flat.'],['and','or','she went very fast.'])]},
+{n:'Choice Forest',e:'🌳',c:'#2b8a3e',sub:'joining with “or”',
+ learn:[
+  {t:'AND builds on. BUT opposes. Now meet a new joining word: OR!',ex:['The wind blew and the windows rattled.','We had no map but we found the museum.']},
+  {t:'OR gives a different option for the second idea.',ex:['Shall we bake a cake or play with your bricks?','Alex could walk to school or he could ride his bike.']},
+  {t:'OR can also tell us what might happen as a result of the first idea.',ex:['Take the chicken out of the oven or it will burn.','Eat your vegetables or you won’t grow big and strong.']}],
+ items:[mc('Which one is a joining word?',['or','my','is'],'Or is a joining word, just like and and but.'),
+  gap('I cycled to the park ___ I met my friends.','and',['and','but','or']),gap('It was freezing cold in the pool ___ we had a lot of fun.','but',['and','but','or']),
+  gap('Shall we go to the cinema ___ would you like to go to the park?','or',['and','but','or']),
+  ...sort('OR',[['Sam can do home learning or he can go to after school club.','Another option'],['Wear a coat or you might catch a cold.','A result'],['Put the books away or Mr Jones will be disappointed.','A result']]),
+  bd(['We can read a book','or','we can go outside.'],['and','but','the sun is hot.']),
+  tf('The joining word or can be used to build on the first idea.',0,'And builds on the first idea. Or gives an option or a result.')]}
+];
+const S={name:'Friend',gems:0,up:0,stars:[]};
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const say=t=>{if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace('___','blank'));u.rate=.9;speechSynthesis.speak(u)};
+const tot=()=>S.stars.reduce((a,b)=>a+(b||0),0);
+function show(h,wi){app.style.setProperty('--c',wi==null?'#2f9e8f':WORLDS[wi].c);
+  app.innerHTML=`<div class="top"><span class="pill">🦉 ${S.name}</span><span class="pill">💎 ${S.gems} gems</span><span class="pill">⭐ ${tot()} / 15</span></div><div class="card pop">${h}</div><div class="foot">© A-Grand Education and Learning Consult LTD · Lessons adapted from Oak National Academy (OGL v3.0)</div>`;
+  app.querySelectorAll('.rd').forEach(b=>b.onclick=()=>say(b.dataset.t))}
+const rd=t=>`<button class="rd" data-t="${t.replace(/"/g,'&quot;')}">🔊 Read to me</button>`;
+const sent=s=>s?`<div class="sent">${s.includes('___')?s.replace('___','<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>'):'“'+s+'”'}</div>`:'';
+
+function welcome(){
+  show(`<div class="center"><p class="big">🦉✏️</p><h1>Sentence Quest</h1><p>Grade 2 English · Join Professor Owl on a quest to become a Sentence Master!</p>
+  <p>Five worlds. Learn first, then play. No timer, no rush.</p>
+  <p><label for="nm">What is your name?</label></p><div class="row"><input id="nm" maxlength="18" style="font:inherit;font-size:22px;padding:10px;border:3px solid #1d2a3a;border-radius:12px;width:min(300px,100%)"></div>
+  <div class="row"><button class="go" id="st">Start the quest ▶</button></div></div>`);
+  document.getElementById('st').onclick=()=>{const v=document.getElementById('nm').value.trim();if(v)S.name=v;map()}}
+
+function map(force){
+  if(!force&&S.stars.filter(Boolean).length===5)return cert();
+  show(`<h2 style="margin:.2em 0;font-size:clamp(24px,4vw,40px)">🗺️ Quest Map</h2><p>Pick the next island. Each world has a lesson, then a game.</p>
+  <div class="row">${WORLDS.map((w,i)=>`<button class="wc" data-i="${i}" ${i>S.up?'disabled':''} style="border-color:${w.c}"><span style="font-size:48px">${i>S.up?'🔒':w.e}</span><br>${w.n}<small>${w.sub}</small><small>${'⭐'.repeat(S.stars[i]||0)||(i<=S.up?'ready!':'')}</small></button>`).join('')}</div>`);
+  app.querySelectorAll('.wc').forEach(b=>b.onclick=()=>learn(+b.dataset.i,0))}
+
+function learn(wi,si){
+  const W=WORLDS[wi],s=W.learn[si],last=si===W.learn.length-1;
+  show(`<div class="band">${W.e} ${W.n}: Lesson ${si+1} of ${W.learn.length}</div>
+  <div class="owl"><span class="e">🦉</span><div class="bub"><p>${s.t}</p></div></div>
+  ${(s.ex||[]).map(x=>`<span class="ex">${x}</span>`).join('')}
+  ${s.v!=null?`<div class="sc"><div class="bm ${s.v?'u':''}"><span>idea one</span><span>idea two</span></div><p><b>${s.v?'Not balanced':'Balanced'}</b></p></div>`:''}
+  <div class="row">${si?'<button id="bk">◀ Back</button>':''}${rd(s.t+' '+(s.ex||[]).join(' '))}<button class="go" id="nx">${last?"Let's play! 🎮":'Next ▶'}</button></div>`,wi);
+  const bk=document.getElementById('bk');if(bk)bk.onclick=()=>learn(wi,si-1);
+  document.getElementById('nx').onclick=()=>last?play(wi):learn(wi,si+1)}
+
+function play(wi){
+  const W=WORLDS[wi],items=W.items;let i=0,first=0;
+  const step=()=>{
+    if(i>=items.length)return result(wi,first);
+    const it=items[i],wrap=`<div class="band">${W.e} ${W.n}: Game</div><div class="dots">${items.map((_,k)=>`<span class="dot ${k<=i?'on':''}"></span>`).join('')}</div>`;
+    let tries=0;
+    const win=()=>{if(!tries){first++;S.gems++}};
+    if(it.b){
+      const tray=shuf([...it.b,...it.d]);let pk=[],msg=null,done=false;
+      const draw=()=>{show(`${wrap}<p><b>${it.q}</b> ${rd(it.b.join(' '))}</p><div class="slots">${pk.length?pk.map((k,x)=>`<button class="chip" data-p="${x}" ${done?'disabled':''} style="background:#d0ebff">${tray[k]}</button>`).join(''):'<span style="opacity:.6">Tap the pieces below</span>'}</div><div class="row">${tray.map((x,k)=>`<button class="chip" data-t="${k}" ${pk.includes(k)||done?'disabled':''}>${x}</button>`).join('')}</div><div class="msg ${msg?msg[1]:''}">${msg?msg[0]:''}</div><div class="row">${done?'<button class="go" id="n">Next ➜</button>':''}</div>`,wi);
+        app.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{pk.push(+b.dataset.t);msg=null;if(pk.length===it.b.length)check();else draw()});
+        app.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{pk.splice(+b.dataset.p,1);draw()});
+        const n=document.getElementById('n');if(n)n.onclick=()=>{i++;step()}};
+      const check=()=>{if(pk.map(k=>tray[k]).join(' ')===it.b.join(' ')){win();done=true;msg=['🎉 Yes! '+it.b.join(' ')+' Two ideas and a joining word make a compound sentence.','good']}else{tries++;pk=[];msg=['Not yet. 🦉 Idea one, then the joining word, then idea two. Try again!','try']}draw()};
+      draw();return}
+    const opts=it.sh?shuf(it.o):it.o;
+    show(`${wrap}<p><b>${it.q}</b> ${rd(it.q+' '+(it.s||''))}</p>${sent(it.s)}<div class="row">${opts.map(o=>`<button class="op" data-v="${o.replace(/"/g,'&quot;')}">${o}</button>`).join('')}</div><div class="msg"></div><div class="row" id="nr"></div>`,wi);
+    const m=app.querySelector('.msg');
+    app.querySelectorAll('.op').forEach(b=>b.onclick=()=>{
+      if(b.dataset.v===it.a){win();b.classList.add('ok');m.className='msg good';m.textContent='🎉 Yes! '+it.w;say(it.w);
+        app.querySelectorAll('.op').forEach(x=>x.disabled=true);document.getElementById('nr').innerHTML='<button class="go" id="n">Next ➜</button>';document.getElementById('n').onclick=()=>{i++;step()}}
+      else{tries++;b.disabled=true;m.className='msg try';m.textContent=tries<2?'Not yet. Try again! 🦉 Think about the rule from the lesson.':'Hint: '+it.w}})};
+  step()}
+
+function result(wi,first){
+  const W=WORLDS[wi],n=W.items.length,r=first/n,st=r>=.8?3:r>=.5?2:1;
+  S.stars[wi]=Math.max(S.stars[wi]||0,st);S.up=Math.max(S.up,wi+1);
+  show(`<div class="center"><p class="big">${W.e}</p><h1>${W.n} complete!</h1><p>${'⭐'.repeat(st)}</p><p>You got ${first} of ${n} right on the first try. Well done, ${S.name}!</p>
+  <p>🦉 Brain break: stretch your arms up high and take 3 slow breaths.</p>
+  <div class="row"><button id="rl">↩ Replay the lesson</button><button class="go" id="mp">Back to the map 🗺️</button></div></div>`,wi);
+  document.getElementById('rl').onclick=()=>learn(wi,0);document.getElementById('mp').onclick=map}
+
+function cert(){
+  show(`<div class="center"><p class="big">🏆</p><h1>Sentence Master!</h1><p style="font-size:clamp(22px,3.5vw,34px)"><b>${S.name}</b> finished all five worlds of Sentence Quest.</p>
+  <p>⭐ ${tot()} / 15 stars · 💎 ${S.gems} gems</p>
+  <p>You can tell statements, questions, commands and exclamations apart, and you can join two ideas with <b>and</b>, <b>but</b> and <b>or</b>.</p>
+  <div class="row"><button class="go" id="ag">Play again 🔁</button><button id="mp">Visit the map</button></div></div>`);
+  document.getElementById('ag').onclick=()=>{S.gems=0;S.up=0;S.stars=[];welcome()};
+  document.getElementById('mp').onclick=()=>map(true)}
+welcome();
+</script>
+</body>
+</html>
